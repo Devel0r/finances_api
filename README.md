@@ -17,7 +17,7 @@
 - Goose
 - ENV
 
-## Установка и запуск 🚀
+## Установка и запуск 
 
 ```
 git clone https://github.com/Devel0r/finances_api.git
