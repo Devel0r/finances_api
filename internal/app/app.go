@@ -36,9 +36,9 @@ func NewApp(cfg *config.Config, logger *logger.Logger) (*App, error) {
 	userController := controller.NewUserController(userService)
 
 	r := gin.Default()
-	r.POST("/users/:userID/deposit", userController.Deposit)
-	r.POST("/users/:userID/transfers/:toUserID", userController.Transfer)
-	r.GET("/users/:userID/transactions", userController.GetLastTransactions)
+	r.POST("/deposits/:userID", userController.Deposit)
+	r.POST("/transfers/:userID/users/:toUserID", userController.Transfer)
+	r.GET("/transactions/users/:userID", userController.GetLastTransactions)
 
 	return &App{
 		server: r,

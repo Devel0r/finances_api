@@ -36,12 +36,10 @@ func (s *userServiceImpl) Deposit(ctx context.Context, userID int64, amount floa
 		return err
 	}
 	defer func() {
-		if p := recover(); p != nil {
-			tx.Rollback(ctx)
-		} else if err != nil {
-			tx.Rollback(ctx)
+		if err != nil {
+			tx.Rollback(ctx) // Явный откат при ошибке
 		} else {
-			tx.Commit(ctx)
+			tx.Commit(ctx) // Коммит только при успехе
 		}
 	}()
 

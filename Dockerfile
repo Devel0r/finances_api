@@ -1,5 +1,4 @@
-# Этап сборки
-FROM golang:1.23 AS builder
+FROM golang:1.23
 
 WORKDIR /app
 
@@ -8,21 +7,8 @@ RUN go mod download
 
 COPY . .
 
-RUN CGO_ENABLED=0 GOOS=linux go build -o /bin/finances_api cmd/finances_api/main.go
-
-# Этап выполнения
-FROM alpine:latest
-
-WORKDIR /root/
-
-COPY --from=builder /bin/finances_api .
-
-COPY .env.local .env.local
-
-RUN chmod +x finances_api
-
 ENV DB_URL=postgres://postgres:postgres@postgres:5432/finance_api?sslmode=disable
 
-EXPOSE 8080
+RUN CGO_ENABLED=0 GOOS=linux go build -o finance_api cmd/finance_api/main.go 
 
-CMD ["./finances_api"]
+CMD ["./finance_api"]

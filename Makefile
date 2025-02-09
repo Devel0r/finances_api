@@ -1,6 +1,6 @@
 .SILENT: 
 
-.PHONY: fmt lint race test run migrate_up migrate_down migrate_status 
+.PHONY: fmt lint race test run_source run migrate_up migrate_down migrate_status dc_down dc_up
 
 include .env.local
 export
@@ -13,26 +13,32 @@ lint: fmt
 race: lint 
 	go test -v -race ./...
 
-test: race 
-	go  test -v -cover ./...
-
-run_source: test 
-	go run -v cmd/finances_api/main.go
-
-run: dc_down
+dc_up: dc_down
 	docker compose up -d 
 
 dc_down: 
 	docker compose down
 
+test: race 
+	go  test -v -cover ./...
+
+prepare: test
+	echo "prepare stage..."
+
+run: dc_up 
+	go run cmd/finance_api/main.go
+
+version:
+	go version
+
 migrate_up: 
-	goose -dir ./migrations postgres "host=localhost port=5432 user=postgres password=postgres dbname=finances_api" up
+	goose -dir ./migrations postgres "host=localhost port=5432 user=postgres password=postgres dbname=finance_api" up
 
 migrate_down: 
-	goose -dir ./migrations postgres "host=localhost port=5432 user=postgres password=postgres dbname=finances_api" down
+	goose -dir ./migrations postgres "host=localhost port=5432 user=postgres password=postgres dbname=finance_api" down
 
 migrate_status: 
-	goose -dir ./migrations postgres "host=localhost port=5432 user=postgres password=postgres dbname=finances_api" status
+	goose -dir ./migrations postgres "host=localhost port=5432 user=postgres password=postgres dbname=finance_api" status
 
 
 .DEFAULT_GOAL := run

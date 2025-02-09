@@ -28,7 +28,13 @@ cd finances_api
 ```
 
 ```
-make
+make migrate_up
+
+make migrate_status
+```
+
+```
+make 
 ```
 
 ### По всем вопросам

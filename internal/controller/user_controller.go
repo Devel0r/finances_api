@@ -53,14 +53,13 @@ func (u *userControllerImpl) Deposit(c *gin.Context) {
 }
 
 func (u *userControllerImpl) Transfer(c *gin.Context) {
-    fromUserIDStr := c.Param("userID") // Изменено с "fromUserID" на "userID"
+    fromUserIDStr := c.Param("userID") 
     fromUserID, err := strconv.ParseInt(fromUserIDStr, 10, 64)
     if err != nil {
         c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid from user ID"})
         return
     }
 
-    // Получаем ID получателя из параметра пути
     toUserIDStr := c.Param("toUserID")
     toUserID, err := strconv.ParseInt(toUserIDStr, 10, 64)
     if err != nil {
@@ -68,7 +67,6 @@ func (u *userControllerImpl) Transfer(c *gin.Context) {
         return
     }
 
-    // Парсим тело запроса с суммой перевода
     var transferRequest struct {
         Amount float64 `json:"amount"`
     }
@@ -77,7 +75,6 @@ func (u *userControllerImpl) Transfer(c *gin.Context) {
         return
     }
 
-    // Вызываем сервис для выполнения перевода
     err = u.userService.Transfer(context.Background(), fromUserID, toUserID, transferRequest.Amount)
     if err != nil {
         c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})

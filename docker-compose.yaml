@@ -11,15 +11,27 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./migrations:/migrations
+    networks:
+      - finance_api_network
 
-  app:
-    build: .
-    ports:
-      - "8080:8080"
-    environment:
-      DB_URL: postgres://${DB_USER}:${DB_PASSWORD}@postgres:${DB_PORT}/${DB_NAME}?sslmode=disable
-    depends_on:
-      - postgres
+  # app:
+  #   restart: always
+  #   build:
+  #     context: .
+  #     dockerfile: ./Dockerfile
+  #   container_name: finance_api
+  #   ports:
+  #     - 8080:8080
+  #   environment:
+  #     DB_URL: postgres://${DB_USER}:${DB_PASSWORD}@postgres:${DB_PORT}/${DB_NAME}?sslmode=disable
+  #   depends_on:
+  #     - postgres
+  #   networks:
+  #     - finance_api_network
 
 volumes:
   postgres_data:
+
+networks:
+  finance_api_network:
+    driver: bridge
